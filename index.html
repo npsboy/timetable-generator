@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Timetable Generator</title>
+    
+    <style>
+        #center{text-align: center;}
+        input{text-align: center;}
+        #details-0{display: inline;}
+        p{display: inline;}
+        
+      
+    </style>
+
+    <p id="script-gen-css"></p>
+
+</head>
+<body>
+
+    <div id="center">
+        <h1>Timetable Generator</h1>
+
+        <div id="details-0">
+            <input type="text" id="sub-0-n" name="sub-0-n" value="Subject-0">
+            <input type="date" id="sub-0-d" name="sub-0-d" >
+            <input type="range" id="sub-0-dif" name="sub-0-dif" min="1" max="5">
+        </div>
+        <br> <br>
+        <p id="details-adder"></p>
+
+        <input type="button" value=" + " onclick="msg()">
+        <br> <br>
+        <input type="button" value="submit" onclick="make_timetable()">
+    </div>
+
+    <script src="timetable.js"></script>
+
+
+</body>
+</html>
