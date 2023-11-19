@@ -12,18 +12,34 @@
         input{text-align: center;}
         #details-0{display: inline;}
         p{display: inline;}
-        
-      
+        body {
+            
+            background-size: cover;
+            background-repeat: no-repeat;
+
+        }
     </style>
 
     <p id="script-gen-css"></p>
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional: Bootstrap Icons (if needed) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.15.0/font/bootstrap-icons.css" rel="stylesheet">
+
 </head>
 <body>
+    
+    <div id="page"></div>
 
+  <!-- <style> 
+     body{ background-image: url("https://www.topuniversities.com/sites/default/files/styles/articles_inline/public/articles/lead-images/10_exam_preparation_tips.jpg.webp");}
+    </style>
     <div id="center">
-        <h1>Timetable Generator</h1>
-
+        <br><br><br>
+        <h1 style="font-size:60px;color:rgb(10, 10, 10)">Timetable Generator</h1>
+        <br>    
         <div id="details-0">
             <input type="text" id="sub-0-n" name="sub-0-n" value="Subject-0">
             <input type="date" id="sub-0-d" name="sub-0-d" >
@@ -35,7 +51,13 @@
         <input type="button" value=" + " onclick="msg()">
         <br> <br>
         <input type="button" value="submit" onclick="make_timetable()">
-    </div>
+    </div> -->
+    
+
+   
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="timetable.js"></script>
 
