@@ -257,7 +257,9 @@ function find_days_for_each() {
 
 function find_days_between(date_1, date_2) {
     
-    if (date_1 = today) {
+
+
+    if (date_1 == today) {
         return Math.round( (new Date(date_2).getTime() - today.getTime()) / mil_sec_in_day )
     } else {
         return Math.round( (new Date(date_2).getTime() - new Date(date_1).getTime()) / mil_sec_in_day )
@@ -269,11 +271,13 @@ function assign_dates() {
     let day = 0
     let tt_push = []
     let extra_dates = []
+    let days_wanted = []
     let extra = 0
     let debug_find_days
+    let no_of_subjects = sub_remaining.length
 
     // the index below is for subject number
-    for (let index = 0; index < sub_remaining.length; index++) {
+    for (let index = 0; index < no_of_subjects; index++) {
 
                
         // first index is for each subject. subject one will come when the index is at 1 etc.
@@ -288,7 +292,6 @@ function assign_dates() {
                     
 
                     day = new Date (today.getTime() + index_2 * mil_sec_in_day)
-                    find_sub_remaining(day);
                     tt_push[0] = day
                     tt_push[1] = sub_remaining[index][1]
                     timetable[index_2] = tt_push.slice()         
@@ -309,7 +312,7 @@ function assign_dates() {
                     day = new Date (today.getTime() + (index_4 * mil_sec_in_day) )
                     extra_dates.push(day)
 
-                }
+                } 
                 console.log("extra dates are = " + extra_dates)
                 //assigns days for study into timetable
 
@@ -318,7 +321,6 @@ function assign_dates() {
                 for (let index_3 = extra; day < new Date (new Date (sub_remaining[index][0]).getTime() - mil_sec_in_day).setHours(0,0,0,0); index_3++) {
                     
                     day = new Date (today.getTime() + index_3 * mil_sec_in_day)
-                    find_sub_remaining(day);
                     tt_push[0] = day
                     tt_push[1] = sub_remaining[index][1]
                     timetable[index_3-extra] = tt_push.slice()       
@@ -326,6 +328,62 @@ function assign_dates() {
                 console.log("timetable is = " + timetable)
             }
         
+        }else {
+
+            day = new Date (day.getTime() + mil_sec_in_day)
+            let wanted_sub_array = []
+            debug_find_days = find_days_between(day, new Date (sub_remaining[index][0]))
+            if ( find_days_between(day, new Date (sub_remaining[index][0]))  <=   (days_for_each[index][1]) )  {
+                
+                if (find_days_between(day, new Date (sub_remaining[index][0]))  <   (days_for_each[index][1]) ) {
+                    wanted_sub_array[0] = sub_remaining[index][1]
+                    wanted_sub_array[1] =  (days_for_each[index][1]) - find_days_between(day, new Date (sub_remaining[index][0]))
+                    days_wanted[ days_wanted.length ] = wanted_sub_array.slice()
+                }
+
+                //mil sec in day subtracted so that it doesn't assign the subject on date of exam           
+                for (let index_2 = 0; day < new Date (new Date (sub_remaining[index][0]).getTime() - mil_sec_in_day).setHours(0,0,0,0); index_2++) {
+                    
+                    if (index_2==0) {
+                        day = day
+
+                    }else{
+                        day = new Date (day.getTime() + mil_sec_in_day)
+                    }
+                    
+                    tt_push[0] = day
+                    tt_push[1] = sub_remaining[index][1]
+                    timetable[timetable.length + index_2] = tt_push.slice()         
+                }
+                console.log("timetable is = " + timetable)
+
+            } else {
+
+                extra = extra + find_days_between(day, new Date (sub_remaining[index][0])) - (days_for_each[index][1])
+                
+
+                //adds it into extra_dates
+                for (let index_4 = 0; day < new Date (day.getTime() + ( (extra * mil_sec_in_day) - mil_sec_in_day) ); index_4++) {
+                    
+                    day = new Date (today.getTime() + (index_4 * mil_sec_in_day) )
+                    extra_dates.push(day)
+
+                } 
+                console.log("extra dates are = " + extra_dates)
+                //assigns days for study into timetable
+
+                
+                for (let index_3 = extra; day < new Date (new Date (sub_remaining[index][0]).getTime() - mil_sec_in_day).setHours(0,0,0,0); index_3++) {
+                    
+                    day = new Date (day.getTime() + index_3 * mil_sec_in_day)
+                    tt_push[0] = day
+                    tt_push[1] = sub_remaining[index][1]
+                    timetable[index_3-extra] = tt_push.slice()       
+                }
+                console.log("timetable is = " + timetable)
+
+            }
+
         }
     }
 }
