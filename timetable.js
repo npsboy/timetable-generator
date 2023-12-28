@@ -332,7 +332,7 @@ function assign_dates() {
 
             day = new Date (day.getTime() + mil_sec_in_day)
             let wanted_sub_array = []
-            debug_find_days = find_days_between(day, new Date (sub_remaining[index][0]))
+            
             if ( find_days_between(day, new Date (sub_remaining[index][0]))  <=   (days_for_each[index][1]) )  {
                 
                 if (find_days_between(day, new Date (sub_remaining[index][0]))  <   (days_for_each[index][1]) ) {
@@ -363,9 +363,12 @@ function assign_dates() {
                 
 
                 //adds it into extra_dates
-                for (let index_4 = 0; day < new Date (day.getTime() + ( (extra * mil_sec_in_day) - mil_sec_in_day) ); index_4++) {
+                
+                let extra_dates_end = new Date (day.getTime() + ( (extra * mil_sec_in_day) - mil_sec_in_day) )
+                extra_dates_end.setHours(0,0,0,0)
+                for (let index_4 = 0; day < extra_dates_end; index_4++) {
                     
-                    day = new Date (today.getTime() + (index_4 * mil_sec_in_day) )
+                    day = new Date (day.getTime() + (index_4 * mil_sec_in_day) )
                     extra_dates.push(day)
 
                 } 
@@ -373,12 +376,12 @@ function assign_dates() {
                 //assigns days for study into timetable
 
                 
-                for (let index_3 = extra; day < new Date (new Date (sub_remaining[index][0]).getTime() - mil_sec_in_day).setHours(0,0,0,0); index_3++) {
+                for (let index_3 = 1; day < new Date (new Date (sub_remaining[index][0]).getTime() - mil_sec_in_day).setHours(0,0,0,0); index_3++) {
                     
-                    day = new Date (day.getTime() + index_3 * mil_sec_in_day)
+                    day = new Date (day.getTime() +  mil_sec_in_day)
                     tt_push[0] = day
                     tt_push[1] = sub_remaining[index][1]
-                    timetable[index_3-extra] = tt_push.slice()       
+                    timetable[timetable.length] = tt_push.slice()       
                 }
                 console.log("timetable is = " + timetable)
 
