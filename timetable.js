@@ -183,7 +183,7 @@ function rearange_dates(){
    
     dates.sort();
 
-    days_to_last_exam = (new Date(dates[num_of_details][0]).getTime() - (today.getTime() + mil_sec_in_day)) / mil_sec_in_day
+    days_to_last_exam = (new Date (new Date(dates[num_of_details][0]).setHours(0,0,0,0)).getTime() - (today.getTime() + mil_sec_in_day)) / mil_sec_in_day
     days_to_last_exam = Math.round(days_to_last_exam)
 
 
@@ -335,7 +335,7 @@ function assign_dates() {
 
         }else {
 
-            day = day
+           
             let wanted_sub_array = []
             
             if ( find_days_between(day, new Date (sub_remaining[index][0]))  <=   (days_for_each[index][1]) )  {
@@ -343,11 +343,10 @@ function assign_dates() {
                 if (find_days_between(day, new Date (sub_remaining[index][0]))  <   (days_for_each[index][1]) && extra_dates.length >= 1) {
                     wanted_sub_array[0] = sub_remaining[index][1]
                     wanted_sub_array[1] =  (days_for_each[index][1]) - find_days_between(day, new Date (sub_remaining[index][0]))
-                    wanted_sub_array[2] = sub_remaining[index][2]
+                    wanted_sub_array[2] = parseInt(sub_remaining[index][2])
                     wanted_sub_array[3] = sub_remaining[index][0]
                     //wanted_sub_array format: subject-name, days-wanted, difficulty, date-of-exam
-                    //for some reason, difficulty is in " ". might need to FIX that later
-
+                
                     days_wanted[ days_wanted.length ] = wanted_sub_array.slice()
                 }
 
@@ -401,46 +400,77 @@ function assign_dates() {
                 console.log("timetable is = " + timetable)
 
             }
+            day = new Date (day.getTime() + mil_sec_in_day)
 
         }
     }
+    assign_extra()
 }
 
 function find_if_extra(x_date) {
     let i = 0;
     while (i < extra_dates.length) {
       let date = extra_dates[i];
-      if (date.getTime() == x_date.getTime()) {
+      if ( ( new Date (date.getTime()) ).setHours(0,0,0,0) == ( new Date (x_date.getTime()) ).setHours(0,0,0,0)) {
         return true;
       }
       i = i + 1;
     }
     return false;
-  }
+}
+
+function isSameDate(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+}
 
 function assign_extra() {
-    //rearange array in ascending order of difficulty
+    //rearange array in descending order of difficulty
     //check how many days the most difficult one neads
     //allot the available days closest to that subject to it (till it is sattisfied)
     //repeat 
     days_wanted.sort(function(a, b) {
-        return a[2] - b[2];
+        return b[2] - a[2];
     });
+    
+    for (; days_wanted.length >= 1 ;) {
+        
+        let boss = days_wanted[0][0]
+        let boss_wants = days_wanted[0][1]
+        let boss_exam_date = new Date(days_wanted[0][3]) 
+        let check_date = new Date (boss_exam_date.setHours(0,0,0,0))
 
-    for (let index = 0; index < days_wanted.length; index++) {
-        
-        for (let day = new Date(days_wanted[index][3]); day < array.length; index++) {
-            day.setHours(0,0,0,0)
-            day = new Date (day.getTime() - mil_sec_in_day)
-            
+        for (let index = 1; index <= boss_wants; index++) {
+            for (;find_if_extra(check_date) == false && check_date > new Date (today.getTime() + mil_sec_in_day);) {
+            check_date = new Date(check_date.getTime() - mil_sec_in_day)
+            }
+            extra_dates = extra_dates.filter(date => !isSameDate(date, check_date))
+            let tt_push_extra = []
+            tt_push_extra[0] = check_date
+            tt_push_extra[1] = boss
+            timetable[timetable.length] = tt_push_extra.slice()
         }
-        
+        days_wanted.shift()
+
     }
+
+    
+    //for (let index = 0; index < days_wanted.length; index++) {
+    //
+    //    for (let day = new Date(days_wanted[index][3]); day < array.length; index++) {
+    //        day.setHours(0,0,0,0)
+    //        day = new Date (day.getTime() - mil_sec_in_day)
+    //        
+    //    }
+    //    
+    //}
     
    
 
 }
 
+//useless currently
 function make_basic_tt() {
   
     let index
