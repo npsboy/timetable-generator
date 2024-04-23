@@ -33,18 +33,7 @@ body{ background-image: url(\"https://cdn.pixabay.com/photo/2020/09/24/16/50/boa
 </div>\
 <div id=\"center\"><div id=\"display\"></div></div>\
 "
-let page_3 = "\
-<style> \
-body{ background-image: url(\"https://cdn.pixabay.com/photo/2020/09/24/16/50/board-5599231_1280.png\");}\
-</style>\
-<br> <br> <br> <br>\
-<div id=\"center\">\
-\
-<div id=\"display\"></div>\
-\
-<br> <br> <input type=\"button\" value=\"Edit\" onclick=\"restart()\">\
-</div>\
-"
+let page_3 = " <input type=\"button\" value=\"Edit\" onclick=\"restart()\"> <div id='calendar'></div> "
 
 
 document.getElementById("page").innerHTML = page_1
@@ -362,7 +351,7 @@ function assign_dates() {
                     
                     tt_push[0] = day
                     tt_push[1] = sub_remaining[index][1]
-                    timetable[timetable.length + index_2] = tt_push.slice()         
+                    timetable[timetable.length] = tt_push.slice()         
                 }
                 console.log("timetable is = " + timetable)
 
@@ -458,11 +447,129 @@ function assign_extra() {
     display_dates()
 }
 
+function formatDateToString(date) {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1; // Note: getMonth() returns 0-based index, so we add 1
+    let day = date.getDate();
+
+    // Pad single-digit months and days with a leading zero if necessary
+    if (month < 10) {
+        month = '0' + month;
+    }
+    if (day < 10) {
+        day = '0' + day;
+    }
+
+    return year + '-' + month + '-' + day;
+}
+
+function getRandomLowSaturationColor() {
+    // Define the base color in RGB
+    let baseColor = [0x6c, 0xcc, 0x86]; // Equivalent to #6ccc86
+
+    // Define a range for variation (e.g., +/- 20)
+    let variation = 70;
+
+    // Generate random values within the variation range
+    let red = baseColor[0] + Math.floor(Math.random() * (variation * 2 + 1)) - variation;
+    let green = baseColor[1] + Math.floor(Math.random() * (variation * 2 + 1)) - variation;
+    let blue = baseColor[2] + Math.floor(Math.random() * (variation * 2 + 1)) - variation;
+
+    // Ensure values are within valid RGB range (0-255)
+    red = Math.max(0, Math.min(255, red));
+    green = Math.max(0, Math.min(255, green));
+    blue = Math.max(0, Math.min(255, blue));
+
+    // Construct the color string in hexadecimal format
+    let color = '#' + red.toString(16).padStart(2, '0') +
+                        green.toString(16).padStart(2, '0') +
+                        blue.toString(16).padStart(2, '0');
+
+    return color;
+}
+
+let subjectColors = new Map();
+
+// Function to get a subject's color
+function getSubjectColor(subject) {
+    // If the subject already has a color assigned, return it
+    if (subjectColors.has(subject)) {
+        return subjectColors.get(subject);
+    } else {
+        // Generate a random low saturation color for the subject
+        let color = getRandomLowSaturationColor();
+        // Store the color for the subject
+        subjectColors.set(subject, color);
+        return color;
+    }
+}
+
 function display_dates() {
     show_load()
     setTimeout(function() { 
+        console.log(formatDateToString(timetable[0][0]))
+        var calendarEl = document.getElementById('calendar');
 
-
+        let events_var =  []
+        let events_push
+        let previous_subject = timetable[0][1]
+        
+        //sub_remaining format: exam_date, name, difficulty
+       for (let index = 0; index < sub_remaining.length; index++) {
+        
+        events_push = { 
+            title: (sub_remaining[index][1]) + " Exam Today",
+            start: sub_remaining[index][0],
+            backgroundColor: "#f02222",
+            borderColor: "#f02222",
+        } 
+    
+        events_var.push({ ...events_push })
+        previous_subject = timetable[index][1]
+        
+       }
+       for (let index = 0; index < timetable.length; index++) {
+        
+        events_push = { 
+            title: 'Study ' + (timetable[index][1]),
+            start: formatDateToString(timetable[index][0]),
+            backgroundColor: getSubjectColor(timetable[index][1]),
+            borderColor: getSubjectColor(timetable[index][1]),
+        } 
+    
+        events_var.push({ ...events_push })
+        previous_subject = timetable[index][1]
+        
+       }
+       
+        
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          timeZone: 'IST',
+      //    initialView: 'listMonth',
+          initialView: 'dayGridMonth',
+          // customize the button names,
+          // otherwise they'd all just say "list"
+          views: {
+            listDay: { buttonText: 'list day' },
+            listWeek: { buttonText: 'list week' },
+            listMonth: { buttonText: 'list month' },
+            listYear: { buttonText: 'list year'}
+          },
+      
+          headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridDay,dayGridWeek,dayGridMonth,dayGridYear'
+          },
+          //events: 'https://fullcalendar.io/api/demo-feeds/events.json'
+      
+          
+          events: events_var
+        
+      
+      
+        });
+        calendar.render();
 
     }, 3000);
 }
@@ -496,9 +603,12 @@ function make_basic_tt() {
 
 function restart() {
     document.getElementById("page").innerHTML = page_1
+    document.getElementById("details-adder").innerHTML = details_in_adder
 }
 
 function make_timetable(){
+    details_in_adder = document.getElementById("details-adder").innerHTML
+   // details_in_adder = ({ ...details_in_adder })
     dates = []
     sub_remaining = []
     days_for_each = []
