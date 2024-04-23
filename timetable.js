@@ -455,19 +455,16 @@ function assign_extra() {
 
     }
 
-    
-    //for (let index = 0; index < days_wanted.length; index++) {
-    //
-    //    for (let day = new Date(days_wanted[index][3]); day < array.length; index++) {
-    //        day.setHours(0,0,0,0)
-    //        day = new Date (day.getTime() - mil_sec_in_day)
-    //        
-    //    }
-    //    
-    //}
-    
-   
+    display_dates()
+}
 
+function display_dates() {
+    show_load()
+    setTimeout(function() { 
+
+
+
+    }, 3000);
 }
 
 //useless currently
