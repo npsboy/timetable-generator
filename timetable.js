@@ -8,14 +8,8 @@ let page_1 = " \
         <br><br><br>\
         <h1 style=\"font-size:60px;color:rgb(10, 10, 10)\">Timetable Generator</h1>\
         <br>\
-        <div id=\"details-0\">\
-            <input type=\"text\" id=\"sub-0-n\" name=\"sub-0-n\" value=\"Subject-0\">\
-            <input type=\"date\" id=\"sub-0-d\" name=\"sub-0-d\" >\
-            <input type=\"range\" id=\"sub-0-dif\" name=\"sub-0-dif\" min=\"1\" max=\"5\">\
-        </div>\
-        <br> <br>\
         <p id=\"details-adder\"></p>\
-\
+        <br>\
         <input type=\"button\" value=\" + \" onclick=\"msg()\">\
         <br> <br>\
         <input type=\"button\" value=\"submit\" onclick=\"make_timetable()\">\
@@ -49,7 +43,7 @@ function show_load() {
 }
 
 
-let num_of_details = 0;
+let num_of_details = -1;
 let details_in_adder = ""
 
 let details = "\
@@ -75,10 +69,10 @@ function msg(){
     let vals_push = []
     let index
 
-    if (num_of_details>1) {
+    if (num_of_details>0) {
         
         details_in_adder = ""
-        for (index = 1; index<num_of_details; index++) { 
+        for (index = 0; index<num_of_details; index++) { 
             vals_push
             vals_push[0] = document.getElementById("sub-" + index + "-n").value
             vals_push[1] = document.getElementById("sub-" + index + "-d").value
@@ -98,6 +92,9 @@ function msg(){
             </div>\
                 <br> \
             ";
+            if (index == 0) {
+               details_in_adder = details_in_adder + "<br>"
+            }
             console.log("index = " + index)
             console.log("sub = " + document.getElementById("sub-" + index + "-n").value)
         }
@@ -123,8 +120,10 @@ function msg(){
     
     
 
-
-    document.getElementById("details-adder").innerHTML = details_in_adder + details;
+    
+        document.getElementById("details-adder").innerHTML = details_in_adder + details;
+    
+    
 
 }
 
@@ -607,7 +606,34 @@ function restart() {
 }
 
 function make_timetable(){
-    details_in_adder = document.getElementById("details-adder").innerHTML
+    let vals_push = []
+    let vals = []
+    details_in_adder = ""
+    for (index = 0; index<=num_of_details; index++) { 
+       
+        vals_push[0] = document.getElementById("sub-" + index + "-n").value
+        vals_push[1] = document.getElementById("sub-" + index + "-d").value
+        vals_push[2] = document.getElementById("sub-" + index + "-dif").value
+        vals[index] = vals_push.slice()
+        
+        details_in_adder = details_in_adder + "\
+        \
+        <div id=\"details-" + index + "\">\
+            \
+            <input type=\"text\" id=\"sub-" + index + "-n\" name=\"sub-" + index + "-n\" value=\"" +  vals[index][0]  + "\">\
+            \
+            <input type=\"date\" id=\"sub-" + index + "-d\" name=\"sub-" + index + "-d\" value=\"" +  vals[index][1]  + "\" >\
+            \
+            <input type=\"range\" id=\"sub-" + index + "-dif\" name=\"sub-" + index + "-dif\" min=\"1\" max=\"5\"  value=\"" +  vals[index][2]  + "\" >\
+            \
+        </div>\
+            <br> \
+        ";
+        if (index == 0) {
+            details_in_adder = details_in_adder + "<br>"
+         }
+    }
+
    // details_in_adder = ({ ...details_in_adder })
     dates = []
     sub_remaining = []
